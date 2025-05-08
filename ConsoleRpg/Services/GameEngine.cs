@@ -3,6 +3,7 @@ using ConsoleRpgEntities.Data;
 using ConsoleRpgEntities.Models.Attributes;
 using ConsoleRpgEntities.Models.Characters;
 using ConsoleRpgEntities.Models.Characters.Monsters;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleRpg.Services;
 
@@ -12,8 +13,8 @@ public class GameEngine
     private readonly MenuManager _menuManager;
     private readonly OutputManager _outputManager;
 
-    private IPlayer _player;
-    private IMonster _goblin;
+    private IPlayer? _player;
+    private IMonster? _goblin;
 
     public GameEngine(GameContext context, MenuManager menuManager, OutputManager outputManager)
     {
@@ -55,7 +56,7 @@ public class GameEngine
                     Environment.Exit(0);
                     break;
                 default:
-                    _outputManager.WriteLine("Invalid selection. Please choose 1.", ConsoleColor.Red);
+                    _outputManager.WriteLine("Invalid selection. Please choose 1 or 2.", ConsoleColor.Red);
                     break;
             }
         }
@@ -63,29 +64,75 @@ public class GameEngine
 
     private void AttackCharacter()
     {
+        if (_goblin == null)
+        {
+            _outputManager.WriteLine("No goblin to attack.", ConsoleColor.Red);
+            return;
+        }
+
         if (_goblin is ITargetable targetableGoblin)
         {
-            _player.Attack(targetableGoblin);
-            _player.UseAbility(_player.Abilities.First(), targetableGoblin);
+            // Use a local variable to ensure the compiler knows _player is not null
+            var player = _player;
+            if (player == null)
+            {
+                _outputManager.WriteLine("Player is not initialized.", ConsoleColor.Red);
+                return;
+            }
+
+            // Player attacks the goblin
+            player.Attack(targetableGoblin);
+
+            // Check if the player has abilities before using one
+            var abilities = player.Abilities;
+            if (abilities != null && abilities.Any())
+            {
+                var firstAbility = abilities.First();
+                player.UseAbility(firstAbility, targetableGoblin);
+            }
+            else
+            {
+                _outputManager.WriteLine("Player has no abilities to use.", ConsoleColor.Red);
+            }
         }
     }
 
     private void SetupGame()
     {
-        _player = _context.Players.FirstOrDefault();
+        // Load the player from the database
+        _player = _context.Players
+            .Include(p => p.Inventory)
+            .Include(p => p.Equipment)
+            .ThenInclude(static e => e.Weapon)
+            .Include(p => p.Equipment)
+            .ThenInclude(static e => e.Armor)
+            .FirstOrDefault();
+
+        if (_player == null)
+        {
+            _outputManager.WriteLine("No player found in the database. Exiting game...", ConsoleColor.Red);
+            Environment.Exit(1);
+        }
+
         _outputManager.WriteLine($"{_player.Name} has entered the game.", ConsoleColor.Green);
 
-        // Load monsters into random rooms 
+        // Load monsters
         LoadMonsters();
 
-        // Pause before starting the game loop
-        Thread.Sleep(500);
+        // Start the game loop
+        Task.Delay(500).Wait();
         GameLoop();
     }
 
     private void LoadMonsters()
     {
+        // Load the first goblin from the database
         _goblin = _context.Monsters.OfType<Goblin>().FirstOrDefault();
-    }
 
+        if (_goblin == null)
+        {
+            _outputManager.WriteLine("No goblin found in the database. Exiting game...", ConsoleColor.Red);
+            Environment.Exit(1);
+        }
+    }
 }

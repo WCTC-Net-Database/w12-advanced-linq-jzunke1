@@ -13,8 +13,8 @@ public class Equipment
 
     // Navigation properties
     [ForeignKey("WeaponId")]
-    public virtual Item Weapon { get; set; }
+    public virtual Item? Weapon { get; set; }
 
     [ForeignKey("ArmorId")]
-    public virtual Item Armor { get; set; }
+    public virtual Item? Armor { get; set; }
 }

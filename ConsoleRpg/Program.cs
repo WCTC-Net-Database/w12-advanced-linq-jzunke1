@@ -1,19 +1,34 @@
-﻿using ConsoleRpg.Services;
+﻿using ConsoleRpg.Helpers;
+using ConsoleRpg.Services;
+using ConsoleRpgEntities.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRpg;
 
 public static class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        var serviceCollection = new ServiceCollection();
-        Startup.ConfigureServices(serviceCollection);
+        var services = new ServiceCollection();
 
-        var serviceProvider = serviceCollection.BuildServiceProvider();
+        services.AddDbContext<GameContext>(options =>
+            options.UseInMemoryDatabase("GameDatabase"));
 
-        var gameEngine = serviceProvider.GetService<GameEngine>();
-        gameEngine?.Run();
+        services.AddSingleton<OutputManager>();
+        services.AddScoped<MenuManager>();
+        services.AddScoped<GameEngine>();
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<GameContext>();
+            context.Database.EnsureCreated();
+            context.SeedData();
+        }
+
+        var gameEngine = serviceProvider.GetRequiredService<GameEngine>();
+        gameEngine.Run();
     }
 }
-

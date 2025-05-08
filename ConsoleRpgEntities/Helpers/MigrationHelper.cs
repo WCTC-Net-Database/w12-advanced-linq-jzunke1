@@ -14,10 +14,10 @@ namespace ConsoleRpgEntities.Helpers
                 : $"{migrationClassName}.rollback.sql";
 
             // Get the directory of the executing assembly
-            string assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
             // Build the path to the SQL script
-            string scriptPath = Path.Combine(assemblyLocation, "Migrations", "Scripts", scriptFileName);
+            string scriptPath = Path.Combine(assemblyLocation ?? string.Empty, "Migrations", "Scripts", scriptFileName);
 
             // Check if the file exists
             if (!File.Exists(scriptPath))

@@ -8,11 +8,11 @@ namespace ConsoleRpgEntities.Data
 {
     public class GameContext : DbContext
     {
-        public DbSet<Player> Players { get; set; }
-        public DbSet<Monster> Monsters { get; set; }
-        public DbSet<Ability> Abilities { get; set; }
-        public DbSet<Item> Items { get; set; }
-        public DbSet<Equipment> Equipments { get; set; }
+        public DbSet<Player> Players { get; set; } = null!;
+        public DbSet<Monster> Monsters { get; set; } = null!;
+        public DbSet<Ability> Abilities { get; set; } = null!;
+        public DbSet<Item> Items { get; set; } = null!;
+        public DbSet<Equipment> Equipments { get; set; } = null!;
 
         public GameContext(DbContextOptions<GameContext> options) : base(options)
         {
@@ -20,23 +20,19 @@ namespace ConsoleRpgEntities.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure TPH for Character hierarchy
             modelBuilder.Entity<Monster>()
-                .HasDiscriminator<string>(m=> m.MonsterType)
+                .HasDiscriminator<string>(m => m.MonsterType)
                 .HasValue<Goblin>("Goblin");
 
-            // Configure TPH for Ability hierarchy
             modelBuilder.Entity<Ability>()
-                .HasDiscriminator<string>(pa=>pa.AbilityType)
+                .HasDiscriminator<string>(pa => pa.AbilityType)
                 .HasValue<ShoveAbility>("ShoveAbility");
 
-            // Configure many-to-many relationship
             modelBuilder.Entity<Player>()
                 .HasMany(p => p.Abilities)
                 .WithMany(a => a.Players)
                 .UsingEntity(j => j.ToTable("PlayerAbilities"));
 
-            // Call the separate configuration method to set up Equipment entity relationships
             ConfigureEquipmentRelationships(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
@@ -44,38 +40,72 @@ namespace ConsoleRpgEntities.Data
 
         private void ConfigureEquipmentRelationships(ModelBuilder modelBuilder)
         {
-            // Configuring the Equipment entity to handle relationships with Item entities (Weapon and Armor)
-            // without causing multiple cascade paths in SQL Server.
-
-            // Equipment has a nullable foreign key WeaponId, pointing to the Item entity.
-            // Setting DeleteBehavior.Restrict ensures that deleting an Item (Weapon) 
-            // will NOT cascade delete any Equipment rows that reference it.
-            // This prevents conflicts that arise with multiple cascading paths.
             modelBuilder.Entity<Equipment>()
-                .HasOne(e => e.Weapon)  // Define the relationship to the Weapon item
-                .WithMany()             // Equipment doesn't need to navigate back to Item
-                .HasForeignKey(e => e.WeaponId)  // Specifies the foreign key column in Equipment
-                //.OnDelete(DeleteBehavior.Restrict)  // Prevents cascading deletes, avoids multiple paths
+                .HasOne(e => e.Weapon)
+                .WithMany()
+                .HasForeignKey(e => e.WeaponId)
                 .IsRequired(false);
 
-            // Similar configuration for ArmorId, also pointing to the Item entity.
-            // Here we are using DeleteBehavior.Restrict for the Armor foreign key relationship as well.
-            // The goal is to avoid cascade paths from both WeaponId and ArmorId foreign keys.
             modelBuilder.Entity<Equipment>()
-                .HasOne(e => e.Armor)  // Define the relationship to the Armor item
-                .WithMany()            // No need for reverse navigation back to Equipment
-                .HasForeignKey(e => e.ArmorId)  // Sets ArmorId as the foreign key in Equipment
-                //.OnDelete(DeleteBehavior.Restrict)  // Prevents cascading deletes to avoid conflict
+                .HasOne(e => e.Armor)
+                .WithMany()
+                .HasForeignKey(e => e.ArmorId)
                 .IsRequired(false);
+        }
 
-            // Explanation of Why DeleteBehavior.Restrict:
-            // Cascade paths occur when there are multiple relationships in one table pointing to another,
-            // each with cascading delete behavior. SQL Server restricts such configurations to prevent 
-            // accidental recursive deletions. Here, by setting DeleteBehavior.Restrict, deleting an Item
-            // (Weapon or Armor) will simply nullify the WeaponId or ArmorId in Equipment rather than 
-            // cascading a delete through multiple paths.
+        public void SeedData()
+        {
+            if (Players.Any() || Monsters.Any() || Items.Any() || Abilities.Any() || Equipments.Any())
+            {
+                return;
+            }
+
+            var sword = new Item { Name = "Sword", Type = "Weapon", Attack = 10, Defense = 0, Weight = 2.5m, Value = 100 };
+            var axe = new Item { Name = "Axe", Type = "Weapon", Attack = 15, Defense = 0, Weight = 3.0m, Value = 120 };
+
+            var ironArmor = new Item { Name = "Iron Armor", Type = "Armor", Attack = 0, Defense = 15, Weight = 5.0m, Value = 150 };
+            var leatherArmor = new Item { Name = "Leather Armor", Type = "Armor", Attack = 0, Defense = 10, Weight = 3.5m, Value = 80 };
+
+            var healthPotion = new Item { Name = "Health Potion", Type = "Consumable", Attack = 0, Defense = 0, Weight = 0.5m, Value = 50 };
+
+            Items.AddRange(sword, axe, ironArmor, leatherArmor, healthPotion);
+
+            var equipment1 = new Equipment { Weapon = sword, Armor = ironArmor };
+            var equipment2 = new Equipment { Weapon = axe, Armor = leatherArmor };
+
+            Equipments.AddRange(equipment1, equipment2);
+
+            var shoveAbility = new ShoveAbility { Name = "Shove", Description = "Pushes the enemy back.", AbilityType = "ShoveAbility" };
+            Abilities.Add(shoveAbility);
+
+            var player = new Player
+            {
+                Name = "Sir Josh",
+                Experience = 0,
+                Health = 100,
+                Inventory = new List<Item> { sword, ironArmor, healthPotion },
+                Equipment = equipment1,
+                Abilities = new List<Ability> { shoveAbility }
+            };
+            Players.Add(player);
+
+            var goblin = new Goblin
+            {
+                Name = "Goblin",
+                Health = 50,
+                AggressionLevel = 3,
+                MonsterType = "Goblin"
+            };
+            Monsters.Add(goblin);
+
+            SaveChanges();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }
-
 
