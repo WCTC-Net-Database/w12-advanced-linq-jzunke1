@@ -1,49 +1,32 @@
-﻿using ConsoleRpgEntities.Data;
-using ConsoleRpgEntities.Models.Characters;
+﻿using ConsoleRpgEntities.Models.Characters;
 
 namespace ConsoleRpg.Helpers;
 
 public class MenuManager
 {
     private readonly OutputManager _outputManager;
-    private readonly GameContext _context;
-    private Player? _player;
 
-    public MenuManager(OutputManager outputManager, GameContext context)
+    public MenuManager(OutputManager outputManager)
     {
-        _outputManager = outputManager ?? throw new ArgumentNullException(nameof(outputManager));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _outputManager = outputManager;
     }
 
-    public bool ShowMainMenu()
+    public bool ShowMainMenu(Player player)
     {
-        _player = _context.Players.FirstOrDefault();
-        if (_player == null)
-        {
-            _outputManager.WriteLine("No player found in the database. Exiting game...", ConsoleColor.Red);
-            Environment.Exit(1);
-        }
-
         _outputManager.WriteLine("Welcome to the RPG Game!", ConsoleColor.Yellow);
         _outputManager.WriteLine("1. Start Game", ConsoleColor.Cyan);
         _outputManager.WriteLine("2. Manage Inventory", ConsoleColor.Cyan);
         _outputManager.WriteLine("3. Exit", ConsoleColor.Cyan);
         _outputManager.Display();
 
-        return HandleMainMenuInput();
+        return HandleMainMenuInput(player);
     }
 
-    private bool HandleMainMenuInput()
+    private bool HandleMainMenuInput(Player player)
     {
         while (true)
         {
             var input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                _outputManager.WriteLine("Invalid input. Please try again.", ConsoleColor.Red);
-                continue;
-            }
-
             switch (input)
             {
                 case "1":
@@ -51,8 +34,8 @@ public class MenuManager
                     _outputManager.Display();
                     return true;
                 case "2":
-                    ShowInventoryMenu();
-                    break;
+                    ShowInventoryMenu(player);
+                    return false;
                 case "3":
                     _outputManager.WriteLine("Exiting game...", ConsoleColor.Red);
                     _outputManager.Display();
@@ -66,120 +49,73 @@ public class MenuManager
         }
     }
 
-    private void ShowInventoryMenu()
+    public bool ShowInventoryMenu(Player player)
     {
-        if (_player == null) return;
-
-        _outputManager.WriteLine("\nInventory Management:", ConsoleColor.Yellow);
-        _outputManager.WriteLine("1. Search for item by name", ConsoleColor.Cyan);
-        _outputManager.WriteLine("2. List items by type", ConsoleColor.Cyan);
-        _outputManager.WriteLine("3. Sort items", ConsoleColor.Cyan);
-        _outputManager.WriteLine("4. Back to Main Menu", ConsoleColor.Cyan);
-        _outputManager.Display();
-
-        HandleInventoryMenuInput();
-    }
-
-    private void HandleInventoryMenuInput()
-    {
-        if (_player == null) return;
-
         while (true)
         {
-            var input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                _outputManager.WriteLine("Invalid input. Please try again.", ConsoleColor.Red);
-                continue;
-            }
+            _outputManager.WriteLine("Inventory Management", ConsoleColor.Yellow);
+            _outputManager.WriteLine("1. Search Item by Name", ConsoleColor.Cyan);
+            _outputManager.WriteLine("2. List Items by Type", ConsoleColor.Cyan);
+            _outputManager.WriteLine("3. Sort Inventory", ConsoleColor.Cyan);
+            _outputManager.WriteLine("4. Display Total Weight of Inventory", ConsoleColor.Cyan);
+            _outputManager.WriteLine("5. Back to Main Menu", ConsoleColor.Cyan);
+            _outputManager.Display();
 
+            var input = Console.ReadLine();
             switch (input)
             {
                 case "1":
-                    _outputManager.Write("Enter item name to search: ", ConsoleColor.Cyan);
+                    _outputManager.Write("Enter item name to search: ", ConsoleColor.White);
                     var itemName = Console.ReadLine();
-                    if (!string.IsNullOrWhiteSpace(itemName))
-                    {
-                        _player.SearchItemByName(itemName);
-                    }
-                    else
-                    {
-                        _outputManager.WriteLine("Invalid item name.", ConsoleColor.Red);
-                    }
-                    _outputManager.Display();
+                    player.SearchItemByName(itemName);
                     break;
                 case "2":
-                    _outputManager.Write("Enter item type to list (e.g., Weapon, Armor): ", ConsoleColor.Cyan);
-                    var itemType = Console.ReadLine();
-                    if (!string.IsNullOrWhiteSpace(itemType))
-                    {
-                        _player.ListItemsByType(itemType);
-                    }
-                    else
-                    {
-                        _outputManager.WriteLine("Invalid item type.", ConsoleColor.Red);
-                    }
-                    _outputManager.Display();
+                    player.ListItemsByType();
                     break;
                 case "3":
-                    ShowSortMenu();
+                    ShowItemsMenu(player);
                     break;
                 case "4":
-                    return;
+                    _outputManager.WriteLine($"Total Weight: {player.GetTotalWeight()} / {player.MaxWeight}", ConsoleColor.Green);
+                    break;
+                case "5":
+                    ShowMainMenu(player);
+                    return false;
                 default:
-                    _outputManager.WriteLine("Invalid selection. Please choose 1, 2, 3, or 4.", ConsoleColor.Red);
-                    _outputManager.Display();
+                    _outputManager.WriteLine("Invalid selection. Please choose a valid option.", ConsoleColor.Red);
                     break;
             }
         }
     }
 
-    private void ShowSortMenu()
+
+    public bool ShowItemsMenu(Player player)
     {
-        if (_player == null) return;
-
-        _outputManager.WriteLine("\nSort Options:", ConsoleColor.Yellow);
-        _outputManager.WriteLine("1. Sort by Name", ConsoleColor.Cyan);
-        _outputManager.WriteLine("2. Sort by Attack Value", ConsoleColor.Cyan);
-        _outputManager.WriteLine("3. Sort by Defense Value", ConsoleColor.Cyan);
-        _outputManager.WriteLine("4. Back to Inventory Menu", ConsoleColor.Cyan);
-        _outputManager.Display();
-
-        HandleSortMenuInput();
-    }
-
-    private void HandleSortMenuInput()
-    {
-        if (_player == null) return;
-
         while (true)
         {
-            var input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                _outputManager.WriteLine("Invalid input. Please try again.", ConsoleColor.Red);
-                continue;
-            }
+            _outputManager.WriteLine("Sort Items", ConsoleColor.Yellow);
+            _outputManager.WriteLine("1. Sort Items by Name", ConsoleColor.Cyan);
+            _outputManager.WriteLine("2. Sort Items by Attack Value", ConsoleColor.Cyan);
+            _outputManager.WriteLine("3. Sort Items by Defence Value", ConsoleColor.Cyan);
+            _outputManager.WriteLine("4. Back to Main Menu", ConsoleColor.Cyan);
+            _outputManager.Display();
 
+            var input = Console.ReadLine();
             switch (input)
             {
                 case "1":
-                    _player.SortItems("name");
-                    _outputManager.Display();
+                    player.SortInventoryBy("Name");
                     break;
                 case "2":
-                    _player.SortItems("attack");
-                    _outputManager.Display();
+                    player.SortInventoryBy("Attack");
                     break;
                 case "3":
-                    _player.SortItems("defense");
-                    _outputManager.Display();
+                    player.SortInventoryBy("Defense");
                     break;
                 case "4":
-                    return;
+                    return false;
                 default:
-                    _outputManager.WriteLine("Invalid selection. Please choose 1, 2, 3, or 4.", ConsoleColor.Red);
-                    _outputManager.Display();
+                    _outputManager.WriteLine("Invalid selection. Please choose a valid option.", ConsoleColor.Red);
                     break;
             }
         }

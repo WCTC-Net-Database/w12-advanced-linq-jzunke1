@@ -78,3 +78,311 @@ Error Number:208,State:1,Class:16Microsoft.Data.SqlClient.SqlException (0x801319
 ClientConnectionId:06265b31-f6fd-43bc-bc04-9fe10195d138
 Error Number:208,State:1,Class:16
 
+2025-05-08T16:06:14.9993197-05:00	DBUG	[Microsoft.EntityFrameworkCore.Infrastructure]	[Microsoft.EntityFrameworkCore.Infrastructure.ServiceProviderCreated]	An 'IServiceProvider' was created for internal use by Entity Framework.
+2025-05-08T16:06:15.9210725-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model]	[Microsoft.EntityFrameworkCore.Model.RedundantIndexRemoved]	The index {'AbilitiesId'} was not created on entity type 'AbilityPlayer (Dictionary<string, object>)' as the properties are already covered by the index {'AbilitiesId', 'PlayersId'}.
+2025-05-08T16:06:16.2431363-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model.Validation]	[Microsoft.EntityFrameworkCore.Model.Validation.ShadowPropertyCreated]	The property 'AbilityPlayer (Dictionary<string, object>).AbilitiesId' was created in shadow state because there are no eligible CLR members with a matching name.
+2025-05-08T16:06:16.2432226-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model.Validation]	[Microsoft.EntityFrameworkCore.Model.Validation.ShadowPropertyCreated]	The property 'AbilityPlayer (Dictionary<string, object>).PlayersId' was created in shadow state because there are no eligible CLR members with a matching name.
+2025-05-08T16:06:16.4755533-05:00	INFO	[Microsoft.EntityFrameworkCore.Infrastructure]	[Microsoft.EntityFrameworkCore.Infrastructure.ContextInitialized]	Entity Framework Core 6.0.36 initialized 'GameContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.35' with options: using lazy loading proxies 
+2025-05-08T16:06:16.5649082-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryCompilationStarting]	Compiling query expression: 
+'DbSet<Player>()
+    .Include(p => p.Inventory)
+    .Include(p => p.Abilities)
+    .Include(p => p.Equipment)
+    .ThenInclude(e => e.Weapon)
+    .FirstOrDefault(p => p.Id == 1)'
+2025-05-08T16:06:16.6506456-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Inventory'.
+2025-05-08T16:06:16.6536714-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Abilities'.
+2025-05-08T16:06:16.6872168-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Equipment'.
+2025-05-08T16:06:16.6886719-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Equipment.Weapon'.
+2025-05-08T16:06:16.9921082-05:00	WARN	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.MultipleCollectionIncludeWarning]	Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2025-05-08T16:06:17.0157699-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned]	Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Player>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Client Projections:
+            0 -> Dictionary<IProperty, int> { [Property: Player.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Player.EquipmentId (int?), 1], [Property: Player.Experience (int) Required, 2], [Property: Player.Health (int) Required, 3], [Property: Player.MaxWeight (int) Required, 4], [Property: Player.Name (string) Required, 5] }
+            1 -> 0
+            2 -> 6
+            3 -> 7
+            4 -> Dictionary<IProperty, int> { [Property: Item.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 8], [Property: Item.Attack (int) Required, 9], [Property: Item.Defense (int) Required, 10], [Property: Item.Name (string) Required, 11], [Property: Item.PlayerId (int) Required FK Index, 12], [Property: Item.Type (string) Required, 13], [Property: Item.Value (int) Required, 14], [Property: Item.Weight (decimal) Required, 15] }
+            5 -> 8
+            6 -> Dictionary<IProperty, int> { [Property: AbilityPlayer (Dictionary<string, object>).AbilitiesId (no field, int) Indexer Required PK FK AfterSave:Throw, 16], [Property: AbilityPlayer (Dictionary<string, object>).PlayersId (no field, int) Indexer Required PK FK Index AfterSave:Throw, 17] }
+            7 -> Dictionary<IProperty, int> { [Property: Ability.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 18], [Property: Ability.AbilityType (string) Required, 19], [Property: Ability.Description (string) Required, 20], [Property: Ability.Discriminator (no field, string) Shadow Required AfterSave:Throw, 21], [Property: Ability.Name (string) Required, 22] }
+            8 -> 16
+            9 -> 17
+            10 -> 18
+            11 -> Dictionary<IProperty, int> { [Property: Equipment.Id (int) Required PK FK AfterSave:Throw, 6], [Property: Equipment.ArmorId (int?) FK Index, 23], [Property: Equipment.WeaponId (int?) FK Index, 24] }
+            12 -> Dictionary<IProperty, int> { [Property: Item.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 7], [Property: Item.Attack (int) Required, 25], [Property: Item.Defense (int) Required, 26], [Property: Item.Name (string) Required, 27], [Property: Item.PlayerId (int) Required FK Index, 28], [Property: Item.Type (string) Required, 29], [Property: Item.Value (int) Required, 30], [Property: Item.Weight (decimal) Required, 31] }
+        SELECT t.Id, t.EquipmentId, t.Experience, t.Health, t.MaxWeight, t.Name, t.Id0, t.Id1, i0.Id, i0.Attack, i0.Defense, i0.Name, i0.PlayerId, i0.Type, i0.Value, i0.Weight, t0.AbilitiesId, t0.PlayersId, t0.Id, t0.AbilityType, t0.Description, t0.Discriminator, t0.Name, t.ArmorId, t.WeaponId, t.Attack, t.Defense, t.Name0, t.PlayerId, t.Type, t.Value, t.Weight
+        FROM 
+        (
+            SELECT TOP(1) p.Id, p.EquipmentId, p.Experience, p.Health, p.MaxWeight, p.Name, e.Id AS Id0, e.ArmorId, e.WeaponId, i.Id AS Id1, i.Attack, i.Defense, i.Name AS Name0, i.PlayerId, i.Type, i.Value, i.Weight
+            FROM Players AS p
+            LEFT JOIN Equipments AS e ON p.Id == e.Id
+            LEFT JOIN Items AS i ON e.WeaponId == i.Id
+            WHERE p.Id == 1
+        ) AS t
+        LEFT JOIN Items AS i0 ON t.Id == i0.PlayerId
+        LEFT JOIN 
+        (
+            SELECT a.AbilitiesId, a.PlayersId, a0.Id, a0.AbilityType, a0.Description, a0.Discriminator, a0.Name
+            FROM AbilityPlayer AS a
+            INNER JOIN Abilities AS a0 ON a.AbilitiesId == a0.Id
+        ) AS t0 ON t.Id == t0.PlayersId
+        ORDER BY t.Id ASC, t.Id0 ASC, t.Id1 ASC, i0.Id ASC, t0.AbilitiesId ASC, t0.PlayersId ASC), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Player>, 
+    ConsoleRpgEntities.Data.GameContext, 
+    False, 
+    False, 
+    True
+)
+    .SingleOrDefault()'
+2025-05-08T16:06:17.0559967-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreating]	Creating DbCommand for 'ExecuteReader'.
+2025-05-08T16:06:17.1029539-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreated]	Created DbCommand for 'ExecuteReader' (44ms).
+2025-05-08T16:06:17.1071948-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpening]	Opening connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.6362051-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpened]	Opened connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.6430260-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting]	Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Id], [t].[EquipmentId], [t].[Experience], [t].[Health], [t].[MaxWeight], [t].[Name], [t].[Id0], [t].[Id1], [i0].[Id], [i0].[Attack], [i0].[Defense], [i0].[Name], [i0].[PlayerId], [i0].[Type], [i0].[Value], [i0].[Weight], [t0].[AbilitiesId], [t0].[PlayersId], [t0].[Id], [t0].[AbilityType], [t0].[Description], [t0].[Discriminator], [t0].[Name], [t].[ArmorId], [t].[WeaponId], [t].[Attack], [t].[Defense], [t].[Name0], [t].[PlayerId], [t].[Type], [t].[Value], [t].[Weight]
+FROM (
+    SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name], [e].[Id] AS [Id0], [e].[ArmorId], [e].[WeaponId], [i].[Id] AS [Id1], [i].[Attack], [i].[Defense], [i].[Name] AS [Name0], [i].[PlayerId], [i].[Type], [i].[Value], [i].[Weight]
+    FROM [Players] AS [p]
+    LEFT JOIN [Equipments] AS [e] ON [p].[Id] = [e].[Id]
+    LEFT JOIN [Items] AS [i] ON [e].[WeaponId] = [i].[Id]
+    WHERE [p].[Id] = 1
+) AS [t]
+LEFT JOIN [Items] AS [i0] ON [t].[Id] = [i0].[PlayerId]
+LEFT JOIN (
+    SELECT [a].[AbilitiesId], [a].[PlayersId], [a0].[Id], [a0].[AbilityType], [a0].[Description], [a0].[Discriminator], [a0].[Name]
+    FROM [AbilityPlayer] AS [a]
+    INNER JOIN [Abilities] AS [a0] ON [a].[AbilitiesId] = [a0].[Id]
+) AS [t0] ON [t].[Id] = [t0].[PlayersId]
+ORDER BY [t].[Id], [t].[Id0], [t].[Id1], [i0].[Id], [t0].[AbilitiesId], [t0].[PlayersId]
+2025-05-08T16:06:17.7085791-05:00	INFO	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted]	Executed DbCommand (63ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Id], [t].[EquipmentId], [t].[Experience], [t].[Health], [t].[MaxWeight], [t].[Name], [t].[Id0], [t].[Id1], [i0].[Id], [i0].[Attack], [i0].[Defense], [i0].[Name], [i0].[PlayerId], [i0].[Type], [i0].[Value], [i0].[Weight], [t0].[AbilitiesId], [t0].[PlayersId], [t0].[Id], [t0].[AbilityType], [t0].[Description], [t0].[Discriminator], [t0].[Name], [t].[ArmorId], [t].[WeaponId], [t].[Attack], [t].[Defense], [t].[Name0], [t].[PlayerId], [t].[Type], [t].[Value], [t].[Weight]
+FROM (
+    SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name], [e].[Id] AS [Id0], [e].[ArmorId], [e].[WeaponId], [i].[Id] AS [Id1], [i].[Attack], [i].[Defense], [i].[Name] AS [Name0], [i].[PlayerId], [i].[Type], [i].[Value], [i].[Weight]
+    FROM [Players] AS [p]
+    LEFT JOIN [Equipments] AS [e] ON [p].[Id] = [e].[Id]
+    LEFT JOIN [Items] AS [i] ON [e].[WeaponId] = [i].[Id]
+    WHERE [p].[Id] = 1
+) AS [t]
+LEFT JOIN [Items] AS [i0] ON [t].[Id] = [i0].[PlayerId]
+LEFT JOIN (
+    SELECT [a].[AbilitiesId], [a].[PlayersId], [a0].[Id], [a0].[AbilityType], [a0].[Description], [a0].[Discriminator], [a0].[Name]
+    FROM [AbilityPlayer] AS [a]
+    INNER JOIN [Abilities] AS [a0] ON [a].[AbilitiesId] = [a0].[Id]
+) AS [t0] ON [t].[Id] = [t0].[PlayersId]
+ORDER BY [t].[Id], [t].[Id0], [t].[Id1], [i0].[Id], [t0].[AbilitiesId], [t0].[PlayersId]
+2025-05-08T16:06:17.7487895-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Player' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.7804012-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Equipment' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8012113-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8244129-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8383927-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'AbilityPlayer' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8507159-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'ShoveAbility' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8627251-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:06:17.8684688-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.DataReaderDisposing]	A data reader was disposed.
+2025-05-08T16:06:17.8707252-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosing]	Closing connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.8759393-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosed]	Closed connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.8766621-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryCompilationStarting]	Compiling query expression: 
+'DbSet<Player>()
+    .FirstOrDefault()'
+2025-05-08T16:06:17.8776315-05:00	WARN	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.FirstWithoutOrderByAndFilterWarning]	The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-05-08T16:06:17.8811592-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned]	Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Player>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: Player.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Player.EquipmentId (int?), 1], [Property: Player.Experience (int) Required, 2], [Property: Player.Health (int) Required, 3], [Property: Player.MaxWeight (int) Required, 4], [Property: Player.Name (string) Required, 5] }
+        SELECT TOP(1) p.Id, p.EquipmentId, p.Experience, p.Health, p.MaxWeight, p.Name
+        FROM Players AS p), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Player>, 
+    ConsoleRpgEntities.Data.GameContext, 
+    False, 
+    False, 
+    True
+)
+    .SingleOrDefault()'
+2025-05-08T16:06:17.8814065-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreating]	Creating DbCommand for 'ExecuteReader'.
+2025-05-08T16:06:17.8814438-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreated]	Created DbCommand for 'ExecuteReader' (0ms).
+2025-05-08T16:06:17.8814862-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpening]	Opening connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.8822051-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpened]	Opened connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.8822654-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting]	Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name]
+FROM [Players] AS [p]
+2025-05-08T16:06:17.9110779-05:00	INFO	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted]	Executed DbCommand (29ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name]
+FROM [Players] AS [p]
+2025-05-08T16:06:17.9113561-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.DataReaderDisposing]	A data reader was disposed.
+2025-05-08T16:06:17.9114629-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosing]	Closing connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:06:17.9115278-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosed]	Closed connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:52.3619749-05:00	DBUG	[Microsoft.EntityFrameworkCore.Infrastructure]	[Microsoft.EntityFrameworkCore.Infrastructure.ServiceProviderCreated]	An 'IServiceProvider' was created for internal use by Entity Framework.
+2025-05-08T16:07:53.1720546-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model]	[Microsoft.EntityFrameworkCore.Model.RedundantIndexRemoved]	The index {'AbilitiesId'} was not created on entity type 'AbilityPlayer (Dictionary<string, object>)' as the properties are already covered by the index {'AbilitiesId', 'PlayersId'}.
+2025-05-08T16:07:53.4755048-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model.Validation]	[Microsoft.EntityFrameworkCore.Model.Validation.ShadowPropertyCreated]	The property 'AbilityPlayer (Dictionary<string, object>).AbilitiesId' was created in shadow state because there are no eligible CLR members with a matching name.
+2025-05-08T16:07:53.4755864-05:00	DBUG	[Microsoft.EntityFrameworkCore.Model.Validation]	[Microsoft.EntityFrameworkCore.Model.Validation.ShadowPropertyCreated]	The property 'AbilityPlayer (Dictionary<string, object>).PlayersId' was created in shadow state because there are no eligible CLR members with a matching name.
+2025-05-08T16:07:53.7356996-05:00	INFO	[Microsoft.EntityFrameworkCore.Infrastructure]	[Microsoft.EntityFrameworkCore.Infrastructure.ContextInitialized]	Entity Framework Core 6.0.36 initialized 'GameContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.35' with options: using lazy loading proxies 
+2025-05-08T16:07:53.8268486-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryCompilationStarting]	Compiling query expression: 
+'DbSet<Player>()
+    .Include(p => p.Inventory)
+    .Include(p => p.Abilities)
+    .Include(p => p.Equipment)
+    .ThenInclude(e => e.Weapon)
+    .FirstOrDefault(p => p.Id == 1)'
+2025-05-08T16:07:53.9091439-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Inventory'.
+2025-05-08T16:07:53.9120582-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Abilities'.
+2025-05-08T16:07:53.9492062-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Player.Equipment'.
+2025-05-08T16:07:53.9506805-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.NavigationBaseIncluded]	Including navigation: 'Equipment.Weapon'.
+2025-05-08T16:07:54.2626685-05:00	WARN	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.MultipleCollectionIncludeWarning]	Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2025-05-08T16:07:54.2860093-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned]	Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Player>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Client Projections:
+            0 -> Dictionary<IProperty, int> { [Property: Player.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Player.EquipmentId (int?), 1], [Property: Player.Experience (int) Required, 2], [Property: Player.Health (int) Required, 3], [Property: Player.MaxWeight (int) Required, 4], [Property: Player.Name (string) Required, 5] }
+            1 -> 0
+            2 -> 6
+            3 -> 7
+            4 -> Dictionary<IProperty, int> { [Property: Item.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 8], [Property: Item.Attack (int) Required, 9], [Property: Item.Defense (int) Required, 10], [Property: Item.Name (string) Required, 11], [Property: Item.PlayerId (int) Required FK Index, 12], [Property: Item.Type (string) Required, 13], [Property: Item.Value (int) Required, 14], [Property: Item.Weight (decimal) Required, 15] }
+            5 -> 8
+            6 -> Dictionary<IProperty, int> { [Property: AbilityPlayer (Dictionary<string, object>).AbilitiesId (no field, int) Indexer Required PK FK AfterSave:Throw, 16], [Property: AbilityPlayer (Dictionary<string, object>).PlayersId (no field, int) Indexer Required PK FK Index AfterSave:Throw, 17] }
+            7 -> Dictionary<IProperty, int> { [Property: Ability.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 18], [Property: Ability.AbilityType (string) Required, 19], [Property: Ability.Description (string) Required, 20], [Property: Ability.Discriminator (no field, string) Shadow Required AfterSave:Throw, 21], [Property: Ability.Name (string) Required, 22] }
+            8 -> 16
+            9 -> 17
+            10 -> 18
+            11 -> Dictionary<IProperty, int> { [Property: Equipment.Id (int) Required PK FK AfterSave:Throw, 6], [Property: Equipment.ArmorId (int?) FK Index, 23], [Property: Equipment.WeaponId (int?) FK Index, 24] }
+            12 -> Dictionary<IProperty, int> { [Property: Item.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 7], [Property: Item.Attack (int) Required, 25], [Property: Item.Defense (int) Required, 26], [Property: Item.Name (string) Required, 27], [Property: Item.PlayerId (int) Required FK Index, 28], [Property: Item.Type (string) Required, 29], [Property: Item.Value (int) Required, 30], [Property: Item.Weight (decimal) Required, 31] }
+        SELECT t.Id, t.EquipmentId, t.Experience, t.Health, t.MaxWeight, t.Name, t.Id0, t.Id1, i0.Id, i0.Attack, i0.Defense, i0.Name, i0.PlayerId, i0.Type, i0.Value, i0.Weight, t0.AbilitiesId, t0.PlayersId, t0.Id, t0.AbilityType, t0.Description, t0.Discriminator, t0.Name, t.ArmorId, t.WeaponId, t.Attack, t.Defense, t.Name0, t.PlayerId, t.Type, t.Value, t.Weight
+        FROM 
+        (
+            SELECT TOP(1) p.Id, p.EquipmentId, p.Experience, p.Health, p.MaxWeight, p.Name, e.Id AS Id0, e.ArmorId, e.WeaponId, i.Id AS Id1, i.Attack, i.Defense, i.Name AS Name0, i.PlayerId, i.Type, i.Value, i.Weight
+            FROM Players AS p
+            LEFT JOIN Equipments AS e ON p.Id == e.Id
+            LEFT JOIN Items AS i ON e.WeaponId == i.Id
+            WHERE p.Id == 1
+        ) AS t
+        LEFT JOIN Items AS i0 ON t.Id == i0.PlayerId
+        LEFT JOIN 
+        (
+            SELECT a.AbilitiesId, a.PlayersId, a0.Id, a0.AbilityType, a0.Description, a0.Discriminator, a0.Name
+            FROM AbilityPlayer AS a
+            INNER JOIN Abilities AS a0 ON a.AbilitiesId == a0.Id
+        ) AS t0 ON t.Id == t0.PlayersId
+        ORDER BY t.Id ASC, t.Id0 ASC, t.Id1 ASC, i0.Id ASC, t0.AbilitiesId ASC, t0.PlayersId ASC), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Player>, 
+    ConsoleRpgEntities.Data.GameContext, 
+    False, 
+    False, 
+    True
+)
+    .SingleOrDefault()'
+2025-05-08T16:07:54.3258287-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreating]	Creating DbCommand for 'ExecuteReader'.
+2025-05-08T16:07:54.3716364-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreated]	Created DbCommand for 'ExecuteReader' (42ms).
+2025-05-08T16:07:54.3757801-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpening]	Opening connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:54.9722382-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpened]	Opened connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:54.9785448-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting]	Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Id], [t].[EquipmentId], [t].[Experience], [t].[Health], [t].[MaxWeight], [t].[Name], [t].[Id0], [t].[Id1], [i0].[Id], [i0].[Attack], [i0].[Defense], [i0].[Name], [i0].[PlayerId], [i0].[Type], [i0].[Value], [i0].[Weight], [t0].[AbilitiesId], [t0].[PlayersId], [t0].[Id], [t0].[AbilityType], [t0].[Description], [t0].[Discriminator], [t0].[Name], [t].[ArmorId], [t].[WeaponId], [t].[Attack], [t].[Defense], [t].[Name0], [t].[PlayerId], [t].[Type], [t].[Value], [t].[Weight]
+FROM (
+    SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name], [e].[Id] AS [Id0], [e].[ArmorId], [e].[WeaponId], [i].[Id] AS [Id1], [i].[Attack], [i].[Defense], [i].[Name] AS [Name0], [i].[PlayerId], [i].[Type], [i].[Value], [i].[Weight]
+    FROM [Players] AS [p]
+    LEFT JOIN [Equipments] AS [e] ON [p].[Id] = [e].[Id]
+    LEFT JOIN [Items] AS [i] ON [e].[WeaponId] = [i].[Id]
+    WHERE [p].[Id] = 1
+) AS [t]
+LEFT JOIN [Items] AS [i0] ON [t].[Id] = [i0].[PlayerId]
+LEFT JOIN (
+    SELECT [a].[AbilitiesId], [a].[PlayersId], [a0].[Id], [a0].[AbilityType], [a0].[Description], [a0].[Discriminator], [a0].[Name]
+    FROM [AbilityPlayer] AS [a]
+    INNER JOIN [Abilities] AS [a0] ON [a].[AbilitiesId] = [a0].[Id]
+) AS [t0] ON [t].[Id] = [t0].[PlayersId]
+ORDER BY [t].[Id], [t].[Id0], [t].[Id1], [i0].[Id], [t0].[AbilitiesId], [t0].[PlayersId]
+2025-05-08T16:07:55.0446741-05:00	INFO	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted]	Executed DbCommand (63ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [t].[Id], [t].[EquipmentId], [t].[Experience], [t].[Health], [t].[MaxWeight], [t].[Name], [t].[Id0], [t].[Id1], [i0].[Id], [i0].[Attack], [i0].[Defense], [i0].[Name], [i0].[PlayerId], [i0].[Type], [i0].[Value], [i0].[Weight], [t0].[AbilitiesId], [t0].[PlayersId], [t0].[Id], [t0].[AbilityType], [t0].[Description], [t0].[Discriminator], [t0].[Name], [t].[ArmorId], [t].[WeaponId], [t].[Attack], [t].[Defense], [t].[Name0], [t].[PlayerId], [t].[Type], [t].[Value], [t].[Weight]
+FROM (
+    SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name], [e].[Id] AS [Id0], [e].[ArmorId], [e].[WeaponId], [i].[Id] AS [Id1], [i].[Attack], [i].[Defense], [i].[Name] AS [Name0], [i].[PlayerId], [i].[Type], [i].[Value], [i].[Weight]
+    FROM [Players] AS [p]
+    LEFT JOIN [Equipments] AS [e] ON [p].[Id] = [e].[Id]
+    LEFT JOIN [Items] AS [i] ON [e].[WeaponId] = [i].[Id]
+    WHERE [p].[Id] = 1
+) AS [t]
+LEFT JOIN [Items] AS [i0] ON [t].[Id] = [i0].[PlayerId]
+LEFT JOIN (
+    SELECT [a].[AbilitiesId], [a].[PlayersId], [a0].[Id], [a0].[AbilityType], [a0].[Description], [a0].[Discriminator], [a0].[Name]
+    FROM [AbilityPlayer] AS [a]
+    INNER JOIN [Abilities] AS [a0] ON [a].[AbilitiesId] = [a0].[Id]
+) AS [t0] ON [t].[Id] = [t0].[PlayersId]
+ORDER BY [t].[Id], [t].[Id0], [t].[Id1], [i0].[Id], [t0].[AbilitiesId], [t0].[PlayersId]
+2025-05-08T16:07:55.0829683-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Player' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.1136682-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Equipment' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.1357003-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.1588442-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.1734093-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'AbilityPlayer' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.1877937-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'ShoveAbility' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.2044226-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Item' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:55.2100545-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.DataReaderDisposing]	A data reader was disposed.
+2025-05-08T16:07:55.2128363-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosing]	Closing connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.2184073-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosed]	Closed connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.2191554-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryCompilationStarting]	Compiling query expression: 
+'DbSet<Player>()
+    .FirstOrDefault()'
+2025-05-08T16:07:55.2200678-05:00	WARN	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.FirstWithoutOrderByAndFilterWarning]	The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-05-08T16:07:55.2235907-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned]	Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Player>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: Player.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Player.EquipmentId (int?), 1], [Property: Player.Experience (int) Required, 2], [Property: Player.Health (int) Required, 3], [Property: Player.MaxWeight (int) Required, 4], [Property: Player.Name (string) Required, 5] }
+        SELECT TOP(1) p.Id, p.EquipmentId, p.Experience, p.Health, p.MaxWeight, p.Name
+        FROM Players AS p), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Player>, 
+    ConsoleRpgEntities.Data.GameContext, 
+    False, 
+    False, 
+    True
+)
+    .SingleOrDefault()'
+2025-05-08T16:07:55.2238383-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreating]	Creating DbCommand for 'ExecuteReader'.
+2025-05-08T16:07:55.2238678-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreated]	Created DbCommand for 'ExecuteReader' (0ms).
+2025-05-08T16:07:55.2239032-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpening]	Opening connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.2246610-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpened]	Opened connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.2247183-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting]	Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name]
+FROM [Players] AS [p]
+2025-05-08T16:07:55.2514392-05:00	INFO	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted]	Executed DbCommand (27ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [p].[Id], [p].[EquipmentId], [p].[Experience], [p].[Health], [p].[MaxWeight], [p].[Name]
+FROM [Players] AS [p]
+2025-05-08T16:07:55.2516032-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.DataReaderDisposing]	A data reader was disposed.
+2025-05-08T16:07:55.2516825-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosing]	Closing connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.2517206-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosed]	Closed connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:55.9666934-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryCompilationStarting]	Compiling query expression: 
+'DbSet<Monster>()
+    .OfType<Goblin>()
+    .FirstOrDefault()'
+2025-05-08T16:07:55.9960933-05:00	WARN	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.FirstWithoutOrderByAndFilterWarning]	The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-05-08T16:07:56.0043293-05:00	DBUG	[Microsoft.EntityFrameworkCore.Query]	[Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned]	Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Goblin>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.SelectExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: Monster.Id (int) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Monster.AggressionLevel (int) Required, 1], [Property: Monster.Discriminator (no field, string) Shadow Required AfterSave:Throw, 2], [Property: Monster.Health (int) Required, 3], [Property: Monster.MonsterType (string) Required, 4], [Property: Monster.Name (string) Required, 5], [Property: Goblin.Sneakiness (int) Required, 6] }
+        SELECT TOP(1) m.Id, m.AggressionLevel, m.Discriminator, m.Health, m.MonsterType, m.Name, m.Sneakiness
+        FROM Monsters AS m), 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Goblin>, 
+    ConsoleRpgEntities.Data.GameContext, 
+    False, 
+    False, 
+    True
+)
+    .SingleOrDefault()'
+2025-05-08T16:07:56.0050723-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreating]	Creating DbCommand for 'ExecuteReader'.
+2025-05-08T16:07:56.0051189-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandCreated]	Created DbCommand for 'ExecuteReader' (0ms).
+2025-05-08T16:07:56.0051354-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpening]	Opening connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:56.0052249-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionOpened]	Opened connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:56.0052629-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting]	Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [m].[Id], [m].[AggressionLevel], [m].[Discriminator], [m].[Health], [m].[MonsterType], [m].[Name], [m].[Sneakiness]
+FROM [Monsters] AS [m]
+2025-05-08T16:07:56.0317260-05:00	INFO	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted]	Executed DbCommand (26ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT TOP(1) [m].[Id], [m].[AggressionLevel], [m].[Discriminator], [m].[Health], [m].[MonsterType], [m].[Name], [m].[Sneakiness]
+FROM [Monsters] AS [m]
+2025-05-08T16:07:56.0489100-05:00	DBUG	[Microsoft.EntityFrameworkCore.ChangeTracking]	[Microsoft.EntityFrameworkCore.ChangeTracking.StartedTracking]	Context 'GameContext' started tracking 'Goblin' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2025-05-08T16:07:56.0726199-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Command]	[Microsoft.EntityFrameworkCore.Database.Command.DataReaderDisposing]	A data reader was disposed.
+2025-05-08T16:07:56.0726997-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosing]	Closing connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.
+2025-05-08T16:07:56.0727414-05:00	DBUG	[Microsoft.EntityFrameworkCore.Database.Connection]	[Microsoft.EntityFrameworkCore.Database.Connection.ConnectionClosed]	Closed connection to database 'jzunke_20023_W12Assignment' on server 'bitsql.wctc.edu'.

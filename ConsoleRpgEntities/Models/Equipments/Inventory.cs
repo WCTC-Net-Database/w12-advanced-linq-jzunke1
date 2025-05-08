@@ -15,8 +15,8 @@ namespace ConsoleRpgEntities.Models.Equipments
         public int PlayerId { get; set; }
 
         // Navigation properties
-        public virtual Player? Player { get; set; }
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+        public virtual Player Player { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
     }
 
 }

@@ -3,10 +3,10 @@
 namespace ConsoleRpgEntities.Models.Equipments;
 
 
-// TODO note this model has been updated from the previous version so a migration will be needed
 public class Item
 {
     public int Id { get; set; }
+    public int PlayerId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public int Attack { get; set; }

@@ -1,4 +1,7 @@
-﻿using Console.RpgEntities.Models;
+﻿using ConsoleRpgEntities.Models.Abilities.PlayerAbilities;
+using ConsoleRpgEntities.Models.Attributes;
+using ConsoleRpgEntities.Models.Characters;
+using ConsoleRpgEntities.Models.Characters.Monsters;
 using ConsoleRpgEntities.Models.Equipments;
 
 public class Player : ITargetable, IPlayer
@@ -7,117 +10,123 @@ public class Player : ITargetable, IPlayer
     public string Name { get; set; } = string.Empty;
     public int Experience { get; set; }
     public int Health { get; set; }
-    public virtual List<Item> Inventory { get; set; } = new();
+
+    public int? EquipmentId { get; set; }
+    public virtual Equipment Equipment { get; set; } = new Equipment();
+    public virtual ICollection<Ability> Abilities { get; set; } = new List<Ability>();
+    public virtual List<Item> Inventory { get; set; } = new List<Item>();
     public int MaxWeight { get; set; } = 50;
 
-    public void AddItemToInventory(Item item)
+    public void Attack(ITargetable target)
     {
-        var totalWeight = Inventory.Sum(i => i.Weight);
-        if (totalWeight + item.Weight > MaxWeight)
-        {
-            Console.WriteLine("Cannot add item. Exceeds weight limit.");
-            return;
-        }
+        int damage = Equipment.Weapon?.Attack ?? 1;
+        Console.WriteLine($"{Name} attacks {target.Name} with a {Equipment.Weapon?.Name ?? "fist"} dealing {damage} damage!");
 
-        Inventory.Add(item);
-        Console.WriteLine($"{item.Name} has been added to your inventory.");
-    }
+        target.Health -= damage;
 
-    public void UseItemFromInventory(string itemName)
-    {
-        var item = Inventory.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        if (item != null)
+        if (target.Health <= 0)
         {
-            Console.WriteLine($"Using {item.Name}...");
-            Inventory.Remove(item);
+            target.Health = 0;
+            Console.WriteLine($"{target.Name} has been defeated!");
         }
         else
         {
-            Console.WriteLine($"Item '{itemName}' not found in inventory.");
+            Console.WriteLine($"{target.Name} has {target.Health} health remaining.");
         }
     }
 
-    public void EquipItemFromInventory(string itemName)
-    {
-        var item = Inventory.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        if (item == null)
-        {
-            Console.WriteLine($"Item '{itemName}' not found in inventory.");
-            return;
-        }
 
-        if (item.Type == "Weapon" || item.Type == "Armor")
+
+    public void UseAbility(IAbility ability, ITargetable target)
+    {
+        if (Abilities.Contains(ability))
         {
-            Console.WriteLine($"Equipping {item.Name}...");
+            ability.Activate(this, target);
         }
         else
         {
-            Console.WriteLine($"{item.Name} cannot be equipped.");
-        }
-    }
-
-    public void RemoveItemFromInventory(string itemName)
-    {
-        var item = Inventory.FirstOrDefault(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
-        if (item != null)
-        {
-            Inventory.Remove(item);
-            Console.WriteLine($"{item.Name} has been removed from your inventory.");
-        }
-        else
-        {
-            Console.WriteLine($"Item '{itemName}' not found in inventory.");
+            Console.WriteLine($"{Name} does not have the ability {ability.Name}!");
         }
     }
 
     public void SearchItemByName(string itemName)
     {
-        var matchingItems = Inventory.Where(i => i.Name.Contains(itemName, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (string.IsNullOrWhiteSpace(itemName))
+        {
+            Console.WriteLine("Item name cannot be null or empty.");
+            return;
+        }
+
+        var matchingItems = Inventory
+            .Where(i => i.Name.Contains(itemName, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
         if (matchingItems.Any())
         {
-            Console.WriteLine("Matching items:");
+            Console.WriteLine($"Items matching '{itemName}':");
             foreach (var item in matchingItems)
             {
-                Console.WriteLine($"- {item.Name}");
+                Console.WriteLine($"- {item.Name} (Type: {item.Type}, Attack: {item.Attack}, Defense: {item.Defense})");
             }
         }
         else
         {
-            Console.WriteLine("No matching items found.");
+            Console.WriteLine($"No items found matching '{itemName}'.");
         }
     }
 
-    public void ListItemsByType(string itemType)
+    public void ListItemsByType()
     {
-        var itemsByType = Inventory.Where(i => i.Type.Equals(itemType, StringComparison.OrdinalIgnoreCase)).ToList();
-        if (itemsByType.Any())
+        if (Inventory == null || !Inventory.Any())
         {
-            Console.WriteLine($"Items of type '{itemType}':");
-            foreach (var item in itemsByType)
+            Console.WriteLine("Your inventory is empty.");
+            return;
+        }
+
+        var groupedItems = Inventory.GroupBy(i => i.Type);
+        Console.WriteLine("Items grouped by type:");
+        foreach (var group in groupedItems)
+        {
+            Console.WriteLine($"Type: {group.Key}");
+            foreach (var item in group)
             {
-                Console.WriteLine($"- {item.Name}");
+                Console.WriteLine($"- {item.Name} (Attack: {item.Attack}, Defense: {item.Defense})");
             }
-        }
-        else
-        {
-            Console.WriteLine($"No items of type '{itemType}' found.");
         }
     }
 
-    public void SortItems(string sortBy)
+    public void SortInventoryBy(string criterion)
     {
-        IEnumerable<Item> sortedItems = sortBy.ToLower() switch
+        if (Inventory == null || !Inventory.Any())
         {
-            "name" => Inventory.OrderBy(i => i.Name),
-            "attack" => Inventory.OrderByDescending(i => i.Attack),
-            "defense" => Inventory.OrderByDescending(i => i.Defense),
+            Console.WriteLine("Your inventory is empty.");
+            return;
+        }
+
+        IEnumerable<Item> sortedItems = criterion switch
+        {
+            "Name" => Inventory.OrderBy(i => i.Name),
+            "Attack" => Inventory.OrderByDescending(i => i.Attack),
+            "Defense" => Inventory.OrderByDescending(i => i.Defense),
             _ => Inventory
         };
 
-        Console.WriteLine("Sorted items:");
+        Console.WriteLine("Sorted Inventory:");
         foreach (var item in sortedItems)
         {
-            Console.WriteLine($"- {item.Name} (Attack: {item.Attack}, Defense: {item.Defense})");
+            Console.WriteLine($"- {item.Name} (Type: {item.Type}, Attack: {item.Attack}, Defense: {item.Defense})");
         }
+    }
+
+
+    public decimal GetTotalWeight()
+    {
+        return Inventory.Sum(item => item.Weight);
+    }
+
+    public IEnumerable<Item> GetEquipableItems()
+    {
+        decimal remainingWeight = MaxWeight - GetTotalWeight();
+        return Inventory.Where(item => item.Weight <= remainingWeight);
     }
 }
